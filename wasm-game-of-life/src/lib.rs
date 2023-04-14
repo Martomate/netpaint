@@ -134,6 +134,11 @@ impl Universe {
         let idx = self.get_index(row, column);
         self.cells[idx].toggle();
     }
+    
+    pub fn set_cell_value(&mut self, row: u32, column: u32, value: Cell) {
+        let idx = self.get_index(row, column);
+        self.cells[idx] = value;
+    }
 }
 
 impl fmt::Display for Universe {

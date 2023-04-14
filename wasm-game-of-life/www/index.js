@@ -52,6 +52,8 @@ playPauseButton.addEventListener("click", event => {
   }
 });
 
+let eraseMode = false;
+
 canvas.addEventListener('click', event => {
   const boundingRect = canvas.getBoundingClientRect();
 
@@ -64,10 +66,15 @@ canvas.addEventListener('click', event => {
   const row = Math.min(Math.floor(canvasTop / (CELL_SIZE + 1)), height - 1);
   const col = Math.min(Math.floor(canvasLeft / (CELL_SIZE + 1)), width - 1);
 
-  universe.toggle_cell(row, col);
+  universe.set_cell_value(row, col, eraseMode ? Cell.Dead : Cell.Alive);
 
   drawGrid();
   drawCells();
+});
+
+const eraseCheckbox = document.getElementById("erase");
+eraseCheckbox.addEventListener('change', event => {
+  eraseMode = eraseCheckbox.checked;
 });
 
 const drawGrid = () => {
