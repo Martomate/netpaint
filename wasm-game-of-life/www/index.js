@@ -1,7 +1,7 @@
 import { memory } from "wasm-game-of-life/wasm_game_of_life_bg";
 import { Universe, Cell } from "wasm-game-of-life";
 
-const CELL_SIZE = 5; // px
+const CELL_SIZE = 1; // px
 const GRID_COLOR = "#CCCCCC";
 const DEAD_COLOR = "#FFFFFF";
 const ALIVE_COLOR = "#000000";
@@ -24,7 +24,7 @@ let lastDrawCol = null;
 const renderLoop = () => {
   universe.tick();
 
-  drawGrid();
+  //drawGrid();
   drawCells();
 
   animationId = requestAnimationFrame(renderLoop);
@@ -69,17 +69,15 @@ const tryDraw = () => {
     const row = Math.min(Math.floor(canvasTop / (CELL_SIZE + 1)), height - 1);
     const col = Math.min(Math.floor(canvasLeft / (CELL_SIZE + 1)), width - 1);
 
-    const steps = (Math.hypot(row - lastDrawRow, col - lastDrawCol) + 1) * 4;
     const startRow = lastDrawRow !== null ? lastDrawRow : row;
     const startCol = lastDrawCol !== null ? lastDrawCol : col;
 
-    for (let i = 0; i < steps; i++) {
-      universe.set_cell_value(startRow + (row - startRow) * i / steps, startCol + (col - startCol) * i / steps, eraseMode ? Cell.Dead : Cell.Alive);
-    }
+    universe.draw_line(startRow, startCol, row, col, eraseMode ? Cell.Dead : Cell.Alive);
+
     lastDrawRow = row;
     lastDrawCol = col;
 
-    drawGrid();
+    //drawGrid();
     drawCells();
 };
 

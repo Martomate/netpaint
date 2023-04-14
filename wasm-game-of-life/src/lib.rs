@@ -11,6 +11,12 @@ use js_sys::Math;
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
+extern {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(s: &str);
+}
+
+#[wasm_bindgen]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Cell {
@@ -94,8 +100,8 @@ impl Universe {
     }
 
     pub fn new() -> Universe {
-        let width = 128;
-        let height = 128;
+        let width = 256;
+        let height = 256;
 
         let cells = (0..width * height)
             .map(|_| {
@@ -138,6 +144,17 @@ impl Universe {
     pub fn set_cell_value(&mut self, row: u32, column: u32, value: Cell) {
         let idx = self.get_index(row, column);
         self.cells[idx] = value;
+    }
+
+    pub fn draw_line(&mut self, from_row: u32, from_col: u32, to_row: u32, to_col: u32, value: Cell) {
+        let dr = to_row as i32 - from_row as i32;
+        let dc = to_col as i32 - from_col as i32;
+        let steps = ((dr.abs() + dc.abs() + 1) * 4) as u32;
+        for i in 0..steps {
+            let row = (from_row as i32 + (dr * i as i32 / steps as i32)) as u32;
+            let col = (from_col as i32 + (dc * i as i32 / steps as i32)) as u32;
+            self.set_cell_value(row, col, value);
+        }
     }
 }
 
