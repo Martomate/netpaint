@@ -1,7 +1,7 @@
 import { memory } from "wasm-game-of-life/wasm_game_of_life_bg";
 import { Universe, Cell } from "wasm-game-of-life";
 
-const CELL_SIZE = 1; // px
+const CELL_SIZE = 2; // px
 const GRID_COLOR = "#CCCCCC";
 const DEAD_COLOR = "#FFFFFF";
 const ALIVE_COLOR = "#000000";
@@ -11,8 +11,8 @@ const width = universe.width();
 const height = universe.height();
 
 const canvas = document.getElementById("game-of-life-canvas");
-canvas.height = (CELL_SIZE + 1) * height + 1;
-canvas.width = (CELL_SIZE + 1) * width + 1;
+canvas.height = CELL_SIZE * height;
+canvas.width = CELL_SIZE * width;
 
 const ctx = canvas.getContext("2d");
 
@@ -66,8 +66,8 @@ const tryDraw = () => {
     const canvasLeft = (event.clientX - boundingRect.left) * scaleX;
     const canvasTop = (event.clientY - boundingRect.top) * scaleY;
 
-    const row = Math.min(Math.floor(canvasTop / (CELL_SIZE + 1)), height - 1);
-    const col = Math.min(Math.floor(canvasLeft / (CELL_SIZE + 1)), width - 1);
+    const row = Math.min(Math.floor(canvasTop / CELL_SIZE), height - 1);
+    const col = Math.min(Math.floor(canvasLeft / CELL_SIZE), width - 1);
 
     const startRow = lastDrawRow !== null ? lastDrawRow : row;
     const startCol = lastDrawCol !== null ? lastDrawCol : col;
@@ -105,14 +105,14 @@ const drawGrid = () => {
 
   // Vertical lines.
   for (let i = 0; i <= width; i++) {
-    ctx.moveTo(i * (CELL_SIZE + 1) + 1, 0);
-    ctx.lineTo(i * (CELL_SIZE + 1) + 1, (CELL_SIZE + 1) * height + 1);
+    ctx.moveTo(i * CELL_SIZE, 0);
+    ctx.lineTo(i * CELL_SIZE, CELL_SIZE * height);
   }
 
   // Horizontal lines.
   for (let j = 0; j <= height; j++) {
-    ctx.moveTo(0, j * (CELL_SIZE + 1) + 1);
-    ctx.lineTo((CELL_SIZE + 1) * width + 1, j * (CELL_SIZE + 1) + 1);
+    ctx.moveTo(0, j * CELL_SIZE);
+    ctx.lineTo(CELL_SIZE * width, j * CELL_SIZE);
   }
 
   ctx.stroke();
@@ -135,8 +135,8 @@ const drawCells = () => {
       ctx.fillStyle = cells[idx] === Cell.Dead ? DEAD_COLOR : ALIVE_COLOR;
 
       ctx.fillRect(
-        col * (CELL_SIZE + 1) + 1,
-        row * (CELL_SIZE + 1) + 1,
+        col * CELL_SIZE,
+        row * CELL_SIZE,
         CELL_SIZE,
         CELL_SIZE
       );
