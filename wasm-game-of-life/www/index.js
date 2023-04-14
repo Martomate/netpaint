@@ -54,22 +54,32 @@ playPauseButton.addEventListener("click", event => {
 
 let eraseMode = false;
 
-canvas.addEventListener('click', event => {
+const tryDraw = () => {
   const boundingRect = canvas.getBoundingClientRect();
 
-  const scaleX = canvas.width / boundingRect.width;
-  const scaleY = canvas.height / boundingRect.height;
+    const scaleX = canvas.width / boundingRect.width;
+    const scaleY = canvas.height / boundingRect.height;
 
-  const canvasLeft = (event.clientX - boundingRect.left) * scaleX;
-  const canvasTop = (event.clientY - boundingRect.top) * scaleY;
+    const canvasLeft = (event.clientX - boundingRect.left) * scaleX;
+    const canvasTop = (event.clientY - boundingRect.top) * scaleY;
 
-  const row = Math.min(Math.floor(canvasTop / (CELL_SIZE + 1)), height - 1);
-  const col = Math.min(Math.floor(canvasLeft / (CELL_SIZE + 1)), width - 1);
+    const row = Math.min(Math.floor(canvasTop / (CELL_SIZE + 1)), height - 1);
+    const col = Math.min(Math.floor(canvasLeft / (CELL_SIZE + 1)), width - 1);
 
-  universe.set_cell_value(row, col, eraseMode ? Cell.Dead : Cell.Alive);
+    universe.set_cell_value(row, col, eraseMode ? Cell.Dead : Cell.Alive);
 
-  drawGrid();
-  drawCells();
+    drawGrid();
+    drawCells();
+};
+
+canvas.addEventListener('mousedown', event => {
+  tryDraw();
+});
+
+canvas.addEventListener('mousemove', event => {
+  if (event.buttons) {
+    tryDraw();
+  }
 });
 
 const eraseCheckbox = document.getElementById("erase");
