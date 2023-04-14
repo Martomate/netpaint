@@ -18,6 +18,9 @@ const ctx = canvas.getContext("2d");
 
 let animationId = null;
 
+let lastDrawRow = null;
+let lastDrawCol = null;
+
 const renderLoop = () => {
   universe.tick();
 
@@ -66,7 +69,15 @@ const tryDraw = () => {
     const row = Math.min(Math.floor(canvasTop / (CELL_SIZE + 1)), height - 1);
     const col = Math.min(Math.floor(canvasLeft / (CELL_SIZE + 1)), width - 1);
 
-    universe.set_cell_value(row, col, eraseMode ? Cell.Dead : Cell.Alive);
+    const steps = (Math.hypot(row - lastDrawRow, col - lastDrawCol) + 1) * 4;
+    const startRow = lastDrawRow !== null ? lastDrawRow : row;
+    const startCol = lastDrawCol !== null ? lastDrawCol : col;
+
+    for (let i = 0; i < steps; i++) {
+      universe.set_cell_value(startRow + (row - startRow) * i / steps, startCol + (col - startCol) * i / steps, eraseMode ? Cell.Dead : Cell.Alive);
+    }
+    lastDrawRow = row;
+    lastDrawCol = col;
 
     drawGrid();
     drawCells();
@@ -79,6 +90,9 @@ canvas.addEventListener('mousedown', event => {
 canvas.addEventListener('mousemove', event => {
   if (event.buttons) {
     tryDraw();
+  } else {
+    lastDrawRow = null;
+    lastDrawCol = null;
   }
 });
 
